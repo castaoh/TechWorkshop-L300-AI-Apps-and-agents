@@ -32,4 +32,4 @@ jobs:
         with:
           context: ./src
           push: true
-          tags: ${{ secrets.ACR_LOGIN_SERVER }}/techworkshop:latest
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/chat-app:latest
