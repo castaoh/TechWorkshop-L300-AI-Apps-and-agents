@@ -87,7 +87,17 @@ def get_request_embedding(text: str) -> list[float] | None:
         logger.error("Embedding env vars not fully set; failing embedding generation.")
         return None
 
-    url = EMBEDDING_ENDPOINT.rstrip("/") + f"/openai/deployments/{EMBEDDING_DEPLOYMENT}/embeddings?api-version={EMBEDDING_API_VERSION}"
+    # Clean the EMBEDDING_ENDPOINT to remove any query parameters
+    import re
+    if "/openai/deployments/" in EMBEDDING_ENDPOINT:
+        # Remove any existing query parameters (everything after ?)
+        base_url = re.split(r'\?', EMBEDDING_ENDPOINT)[0]
+        url = f"{base_url}?api-version={EMBEDDING_API_VERSION}"
+    else:
+        # Construct the full URL from base endpoint
+        clean_endpoint = re.split(r'\?', EMBEDDING_ENDPOINT)[0]  # Remove any query params
+        url = clean_endpoint.rstrip("/") + f"/openai/deployments/{EMBEDDING_DEPLOYMENT}/embeddings?api-version={EMBEDDING_API_VERSION}"
+    
     headers = {
         "Content-Type": "application/json",
         "api-key": EMBEDDING_API_KEY,
